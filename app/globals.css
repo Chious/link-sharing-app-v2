@@ -1,0 +1,37 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}
+
+h1 {
+  font-family: "Instrument Sans", sans-serif;
+  font-weight: 700;
+  font-size: 32px;
+  line-height: 150%;
+}
+
+h2 {
+  font-family: "Instrument Sans", sans-serif;
+  font-weight: 700;
+  font-size: 16px;
+  line-height: 150%;
+}
+
+h3 {
+  font-family: "Instrument Sans", sans-serif;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 150%;
+}
+
+p {
+  font-family: "Instrument Sans", sans-serif;
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 150%;
+}
