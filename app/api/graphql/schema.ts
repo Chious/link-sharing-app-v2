@@ -1,10 +1,10 @@
 export const schema = `#graphql
 
    type User {
-      id: ID!
-      name: String!
-      email: String!
-      token: String
+      firstName: String
+      lastName: String
+      image: String
+      token: String!
    }
 
    type UserProfile {

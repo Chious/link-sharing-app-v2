@@ -2,9 +2,10 @@ export const resolvers = {
   Query: {
     user: () => {
       return {
-        id: "1",
-        name: "John Doe",
-        email: "",
+        token: "123",
+        firstName: "John",
+        lastName: "Doe",
+        image: "",
       };
     },
 
