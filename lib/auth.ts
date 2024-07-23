@@ -1,9 +1,10 @@
 import { db } from "@/db/db";
 import { eq } from "drizzle-orm";
 import { users, userProfiles } from "@/db/schema";
-import { hashedPW } from "./url";
+import { hashedPW } from "./utils";
 import crypto from "crypto";
 import jwt from "jsonwebtoken";
+import { GraphQLError } from "graphql";
 
 function generateRandomSecret(length: number) {
   return crypto.randomBytes(length).toString("base64url");
@@ -36,6 +37,18 @@ export const signup = async ({
   email: string;
   password: string;
 }) => {
+  const match = await db.query.users.findFirst({
+    where: eq(users.email, email),
+  });
+
+  if (match) {
+    return new GraphQLError("User already exists", {
+      extensions: {
+        code: 400,
+      },
+    });
+  }
+
   const hashedPassword = await hashedPW(password);
   const newUser: any = await db.insert(users).values({
     email,

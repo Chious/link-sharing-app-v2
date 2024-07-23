@@ -3,7 +3,9 @@ import { gql } from "@urql/next";
 export const SignupMutation = gql`
   mutation Mutation($input: AuthInput) {
     signup(input: $input) {
-      id
+      firstName
+      image
+      lastName
       token
     }
   }
@@ -12,7 +14,9 @@ export const SignupMutation = gql`
 export const LoginMutation = gql`
   mutation Mutation($input: AuthInput) {
     login(input: $input) {
-      id
+      firstName
+      image
+      lastName
       token
     }
   }

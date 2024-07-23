@@ -1,3 +1,7 @@
+import { GraphQLError } from "graphql";
+import { signup } from "@/lib/auth";
+import { validateEmail, validatePW } from "@/lib/form";
+
 export const resolvers = {
   Query: {
     user: () => {
@@ -36,6 +40,22 @@ export const resolvers = {
 
   Mutation: {
     login: (_: any, { input }: any) => {
+      if (!validateEmail(input.email)) {
+        return new GraphQLError("Invalid email", {
+          extensions: {
+            code: "BAD_USER_INPUT",
+          },
+        });
+      }
+
+      if (!validatePW(input.password)) {
+        return new GraphQLError("Invalid password", {
+          extensions: {
+            code: 400,
+          },
+        });
+      }
+
       return {
         id: "1",
         name: "John Doe",
@@ -44,13 +64,32 @@ export const resolvers = {
       };
     },
 
-    signup: (_: any, { input }: any) => {
-      return {
-        id: "1",
-        name: "John Doe",
+    signup: async (_: any, { input }: any) => {
+      // vaildate
+      if (!validateEmail(input.email)) {
+        return new GraphQLError("Invalid email", {
+          extensions: {
+            code: 400,
+          },
+        });
+      }
+
+      if (!validatePW(input.password)) {
+        return new GraphQLError("Invalid password", {
+          extensions: {
+            code: 400,
+          },
+        });
+      }
+
+      const res = await signup({
         email: input.email,
-        token: "123",
-      };
+        password: input.password,
+      });
+
+      console.log("res: ", res);
+
+      return res;
     },
   },
 };

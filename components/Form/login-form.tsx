@@ -17,17 +17,35 @@ import { LoginMutation } from "@/gql/authMutation";
 import { useState } from "react";
 import { setToken } from "@/lib/token";
 import { useRouter } from "next/navigation";
+import { validateEmail, validatePW } from "@/lib/form";
 
-export function LoginForm() {
+export function LoginForm({ setIsLogin }: { setIsLogin: any }) {
   const [loginResult, login] = useMutation(LoginMutation);
   const [state, setState] = useState({ email: "", password: "" });
+  const [errors, setErrors] = useState({ email: "", password: "" });
   const router = useRouter();
 
+  const validate = () => {
+    let isValid = true;
+
+    if (!validateEmail(state.email)) {
+      setErrors((prev) => ({ ...prev, email: "Invalid email" }));
+      isValid = false;
+    }
+    if (validatePW(state.password)) {
+      setErrors((prev) => ({ ...prev, password: "Invalid password" }));
+      isValid = false;
+    }
+
+    return isValid;
+  };
+
   const handleLogin = async () => {
+    if (!validate()) return;
+
     const res = await login({ input: state });
 
     if (res.data.login) {
-      console.log(res.data.login);
       setToken(res.data.login.token);
       router.push("/user");
     }
@@ -51,7 +69,9 @@ export function LoginForm() {
               value={state.email}
               onChange={(e) => {
                 setState({ ...state, email: e.target.value });
+                setErrors((prev) => ({ ...prev, email: "" }));
               }}
+              errorMsg={errors.email}
             />
           </div>
           <div className="space-y-2">
@@ -63,7 +83,9 @@ export function LoginForm() {
               value={state.password}
               onChange={(e) => {
                 setState({ ...state, password: e.target.value });
+                setErrors((prev) => ({ ...prev, password: "" }));
               }}
+              errorMsg={errors.password}
             />
           </div>
         </CardContent>
@@ -76,7 +98,12 @@ export function LoginForm() {
           </Button>
           <h3 className="text-dark-gray">
             {`Don't have an account?`}
-            <span className="text-dark-purple pl-1 cursor-pointer">
+            <span
+              className="text-dark-purple pl-1 cursor-pointer"
+              onClick={() => {
+                setIsLogin(false);
+              }}
+            >
               Create account
             </span>
           </h3>
