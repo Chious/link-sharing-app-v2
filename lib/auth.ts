@@ -5,12 +5,7 @@ import { hashedPW } from "./utils";
 import crypto from "crypto";
 import jwt from "jsonwebtoken";
 import { GraphQLError } from "graphql";
-
-function generateRandomSecret(length: number) {
-  return crypto.randomBytes(length).toString("base64url");
-}
-
-const SECRET = generateRandomSecret(32);
+const bcrypt = require("bcryptjs");
 
 export const login = async ({
   email,
@@ -24,10 +19,38 @@ export const login = async ({
   });
 
   if (!match) {
-    return {
-      error: "User not found",
-    };
+    return new GraphQLError("User not found", {
+      extensions: {
+        code: 400,
+      },
+    });
   }
+
+  const passwordMatch = await bcrypt.compare(password, match.password);
+
+  if (!passwordMatch) {
+    return new GraphQLError("User not found", {
+      extensions: {
+        code: 400,
+      },
+    });
+  }
+
+  const userProfile = await db.query.userProfiles.findFirst({
+    where: eq(userProfiles.userId, match.id),
+  });
+
+  const token = await createTokenForUser({ userId: match.id });
+
+  return {
+    token: token,
+    user: {
+      firstName: userProfile?.firstName,
+      lastName: userProfile?.lastName,
+      image: userProfile?.image,
+      email: match.email,
+    },
+  };
 };
 
 export const signup = async ({
@@ -50,10 +73,16 @@ export const signup = async ({
   }
 
   const hashedPassword = await hashedPW(password);
-  const newUser: any = await db.insert(users).values({
-    email,
-    password: hashedPassword,
-  });
+  const newUser: any = await db
+    .insert(users)
+    .values({
+      email,
+      password: hashedPassword,
+    })
+    .returning({
+      id: users.id,
+      email: users.email,
+    });
 
   if (!newUser) {
     throw new Error("User not found");
@@ -70,20 +99,54 @@ export const signup = async ({
   });
 
   const token = await createTokenForUser({ userId: newUser[0].id });
+
   return {
-    token,
-    firstName: "",
-    lastName: "",
-    image: "",
+    token: token,
+    user: {
+      firstName: "",
+      lastName: "",
+      image: "",
+      email: newUser[0].email,
+    },
   };
 };
 
 export const createTokenForUser = async ({ userId }: { userId: string }) => {
-  const token = jwt.sign({ userId }, SECRET, { expiresIn: "1h" });
+  const token = jwt.sign({ userId }, process.env.JWT_SECRET, {
+    expiresIn: "1h",
+  });
   return token;
 };
 
-export const verifyToken = async ({ token }: { token: string }) => {
-  const decoded = jwt.verify(token, SECRET);
-  return decoded;
+export const verifyToken = async (token: string) => {
+  if (!token) {
+    throw new GraphQLError("No token provided", {
+      extensions: {
+        code: "UNAUTHENTICATED",
+      },
+    });
+  }
+
+  const splitToken = token.slice(7);
+  try {
+    const user = jwt.verify(splitToken, process.env.JWT_SECRET) as {
+      userId: string;
+    };
+    return user.userId;
+  } catch (error) {
+    if (error instanceof jwt.JsonWebTokenError) {
+      console.error("JWT verification error:", error.message);
+      throw new GraphQLError("Invalid or expired token", {
+        extensions: {
+          code: "UNAUTHENTICATED",
+        },
+      });
+    }
+    console.error("Unexpected error during token verification:", error);
+    throw new GraphQLError("An error occurred during authentication", {
+      extensions: {
+        code: "INTERNAL_SERVER_ERROR",
+      },
+    });
+  }
 };

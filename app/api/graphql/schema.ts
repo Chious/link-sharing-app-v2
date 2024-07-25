@@ -4,7 +4,7 @@ export const schema = `#graphql
       firstName: String
       lastName: String
       image: String
-      token: String!
+      email: String
    }
 
    type UserProfile {
@@ -50,6 +50,18 @@ export const schema = `#graphql
       password: String!
    }
 
+   type AuthResponse {
+      token: String
+      user: User
+   }
+
+   input EditProfileInput {
+      firstName: String
+      lastName: String
+      email: String
+      image: String
+   }
+
    type Query {
       user: User
       userProfile: UserProfile
@@ -57,7 +69,8 @@ export const schema = `#graphql
    }
 
    type Mutation {
-      login(input: AuthInput): User
-      signup(input: AuthInput): User
+      login(input: AuthInput): AuthResponse
+      signup(input: AuthInput): AuthResponse
+      editProfile(input: EditProfileInput): UserProfile
    }
 `;

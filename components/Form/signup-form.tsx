@@ -79,9 +79,8 @@ export function SignupForm({ setIsLogin }: { setIsLogin: any }) {
         password: state.password,
       },
     });
-    console.log("res: ", res);
 
-    if (res.data.login) {
+    if (res.data.signup) {
       setToken(res.data.signup.token);
       router.push("/user");
     }

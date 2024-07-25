@@ -7,6 +7,7 @@ import {
 import { schema } from "./schema";
 import { resolvers } from "./resolvers";
 import { NextRequest } from "next/server";
+import { getToken, getTokenFromRequest } from "@/lib/token";
 
 let plugins = [];
 
@@ -27,7 +28,12 @@ const server = new ApolloServer({
   plugins,
 });
 
-const handler = startServerAndCreateNextHandler<NextRequest>(server, {});
+const handler = startServerAndCreateNextHandler<NextRequest>(server, {
+  context: async (req) => {
+    const token = await getTokenFromRequest(req);
+    return { user: token };
+  },
+});
 
 export async function GET(request: NextRequest) {
   return handler(request);

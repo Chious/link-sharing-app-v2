@@ -23,8 +23,6 @@ export default function ImagePicker() {
     fileReader.readAsDataURL(file);
   };
 
-  console.log("pickedImage:", pickedImage);
-
   return (
     <div className="relative text-dark-purple flex flex-col gap-4 bg-light-purple rounded-lg aspect-square p-4 w-40 items-center justify-center">
       <input

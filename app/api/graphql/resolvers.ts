@@ -1,19 +1,28 @@
 import { GraphQLError } from "graphql";
-import { signup } from "@/lib/auth";
+import { signup, login } from "@/lib/auth";
 import { validateEmail, validatePW } from "@/lib/form";
+import { editProfile } from "@/lib/user";
 
 export const resolvers = {
   Query: {
     user: () => {
       return {
-        token: "123",
         firstName: "John",
         lastName: "Doe",
+        email: "john.doe@example.com",
         image: "",
       };
     },
 
-    userProfile: () => {
+    userProfile: (obj: any, args: any, ctx: any) => {
+      if (!ctx.user) {
+        return new GraphQLError("Unauthorized", {
+          extensions: {
+            code: 401,
+          },
+        });
+      }
+
       return {
         id: "1",
         userId: "1",
@@ -39,7 +48,7 @@ export const resolvers = {
   },
 
   Mutation: {
-    login: (_: any, { input }: any) => {
+    login: async (_: any, { input }: any) => {
       if (!validateEmail(input.email)) {
         return new GraphQLError("Invalid email", {
           extensions: {
@@ -56,12 +65,12 @@ export const resolvers = {
         });
       }
 
-      return {
-        id: "1",
-        name: "John Doe",
+      const res = await login({
         email: input.email,
-        token: "123",
-      };
+        password: input.password,
+      });
+
+      return res;
     },
 
     signup: async (_: any, { input }: any) => {
@@ -87,9 +96,28 @@ export const resolvers = {
         password: input.password,
       });
 
-      console.log("res: ", res);
-
       return res;
+    },
+
+    editProfile: async (_: any, { input }: any, ctx: any) => {
+      if (!ctx.user) {
+        return new GraphQLError("Unauthorized", {
+          extensions: {
+            code: 401,
+          },
+        });
+      }
+
+      const res = await editProfile(input, ctx);
+
+      return {
+        id: res[0].id,
+        userId: res[0].userId,
+        firstName: res[0].firstName,
+        lastName: res[0].lastName,
+        email: res[0].email,
+        image: res[0].image,
+      };
     },
   },
 };

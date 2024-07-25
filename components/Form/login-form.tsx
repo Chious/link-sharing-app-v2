@@ -18,9 +18,12 @@ import { useState } from "react";
 import { setToken } from "@/lib/token";
 import { useRouter } from "next/navigation";
 import { validateEmail, validatePW } from "@/lib/form";
+import { useUser } from "@/contexts/provider";
+import Swal from "sweetalert2";
 
 export function LoginForm({ setIsLogin }: { setIsLogin: any }) {
   const [loginResult, login] = useMutation(LoginMutation);
+  const { setUserInfo } = useUser();
   const [state, setState] = useState({ email: "", password: "" });
   const [errors, setErrors] = useState({ email: "", password: "" });
   const router = useRouter();
@@ -32,7 +35,7 @@ export function LoginForm({ setIsLogin }: { setIsLogin: any }) {
       setErrors((prev) => ({ ...prev, email: "Invalid email" }));
       isValid = false;
     }
-    if (validatePW(state.password)) {
+    if (!validatePW(state.password)) {
       setErrors((prev) => ({ ...prev, password: "Invalid password" }));
       isValid = false;
     }
@@ -47,7 +50,20 @@ export function LoginForm({ setIsLogin }: { setIsLogin: any }) {
 
     if (res.data.login) {
       setToken(res.data.login.token);
-      router.push("/user");
+      setUserInfo(res.data.login.user);
+      Swal.fire({
+        icon: "success",
+        title: "Success",
+        text: "You have successfully logged in",
+      }).then(() => {
+        router.push("/user");
+      });
+    } else {
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: "Something went wrong!",
+      });
     }
   };
 
