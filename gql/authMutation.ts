@@ -3,8 +3,13 @@ import { gql } from "@urql/next";
 export const SignupMutation = gql`
   mutation Mutation($input: AuthInput) {
     signup(input: $input) {
-      id
       token
+      user {
+        firstName
+        image
+        lastName
+        email
+      }
     }
   }
 `;
@@ -12,8 +17,13 @@ export const SignupMutation = gql`
 export const LoginMutation = gql`
   mutation Mutation($input: AuthInput) {
     login(input: $input) {
-      id
       token
+      user {
+        firstName
+        image
+        lastName
+        email
+      }
     }
   }
 `;
