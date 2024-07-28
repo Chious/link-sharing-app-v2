@@ -14,6 +14,7 @@ export const schema = `#graphql
       lastName: String
       email: String
       image: String
+      links: JSON
    }
 
    enum Platform {
@@ -33,16 +34,11 @@ export const schema = `#graphql
    StackOverflow
    }
 
-   type Link {
-      id: ID!
-      userId: ID!
-      platform: Platform
-      url: String
-   }
+   scalar JSON
 
-   type UserLinks {
-      userId: ID!
-      links: [Link]
+   input EditLinksInput {
+      platform: String
+      url: String
    }
 
    input AuthInput {
@@ -53,6 +49,7 @@ export const schema = `#graphql
    type AuthResponse {
       token: String
       user: User
+      links: JSON
    }
 
    input EditProfileInput {
@@ -63,14 +60,13 @@ export const schema = `#graphql
    }
 
    type Query {
-      user: User
       userProfile: UserProfile
-      userLinks: UserLinks
    }
 
    type Mutation {
       login(input: AuthInput): AuthResponse
       signup(input: AuthInput): AuthResponse
       editProfile(input: EditProfileInput): UserProfile
+      editLinks(input: JSON): UserProfile
    }
 `;

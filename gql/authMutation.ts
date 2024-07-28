@@ -24,6 +24,7 @@ export const LoginMutation = gql`
         lastName
         email
       }
+      links
     }
   }
 `;

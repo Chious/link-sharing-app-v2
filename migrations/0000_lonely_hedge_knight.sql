@@ -1,17 +1,3 @@
-CREATE TABLE `links` (
-	`id` text PRIMARY KEY NOT NULL,
-	`userId` text NOT NULL,
-	`platform` text NOT NULL,
-	`url` text NOT NULL
-);
---> statement-breakpoint
-CREATE TABLE `userLinks` (
-	`id` text PRIMARY KEY NOT NULL,
-	`userId` text NOT NULL,
-	`links` text NOT NULL,
-	`created_at` text DEFAULT CURRENT_TIMESTAMP NOT NULL
-);
---> statement-breakpoint
 CREATE TABLE `userProfiles` (
 	`id` text PRIMARY KEY NOT NULL,
 	`user_id` text NOT NULL,
@@ -19,6 +5,7 @@ CREATE TABLE `userProfiles` (
 	`last_name` text,
 	`email` text,
 	`image` text,
+	`links` text,
 	`created_at` text DEFAULT CURRENT_TIMESTAMP NOT NULL
 );
 --> statement-breakpoint

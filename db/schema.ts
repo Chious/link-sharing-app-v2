@@ -20,34 +20,7 @@ export const users = sqliteTable("users", {
 });
 
 export const userRelations = relations(users, ({ many }) => ({
-  userLinks: many(userLinks),
   userProfiles: many(userProfiles),
-}));
-
-export const links = sqliteTable("links", {
-  id: id(),
-  userId: text("userId").notNull(),
-  platform: text("platform").notNull(),
-  url: text("url").notNull(),
-});
-
-export const userLinks = sqliteTable("userLinks", {
-  id: id(),
-  userId: text("userId").notNull(),
-  links: text("links").notNull().$type<string[]>(),
-  createdAt: createdAt(),
-});
-
-export const linksRelations = relations(links, ({ one }) => ({
-  user: one(users, {
-    fields: [links.userId],
-    references: [users.id],
-  }),
-
-  userLinks: one(userLinks, {
-    fields: [links.userId],
-    references: [userLinks.userId],
-  }),
 }));
 
 export const userProfiles = sqliteTable("userProfiles", {
@@ -57,6 +30,7 @@ export const userProfiles = sqliteTable("userProfiles", {
   lastName: text("last_name"),
   email: text("email"),
   image: text("image"),
+  links: text("links"),
   createdAt: createdAt(),
 });
 
@@ -69,12 +43,6 @@ export const userProfilesReferences = relations(userProfiles, ({ one }) => ({
 
 export type InsertUser = typeof users.$inferInsert;
 export type SelectUser = typeof users.$inferSelect;
-
-export type InsertLinks = typeof links.$inferInsert;
-export type SelectLinks = typeof links.$inferSelect;
-
-export type InsertUserLinks = typeof userLinks.$inferInsert;
-export type SelectUserLinks = typeof userLinks.$inferSelect;
 
 export type InsertUserProfiles = typeof userProfiles.$inferInsert;
 export type SelectUserProfiles = typeof userProfiles.$inferSelect;

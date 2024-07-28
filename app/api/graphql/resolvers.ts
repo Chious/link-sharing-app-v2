@@ -1,20 +1,13 @@
 import { GraphQLError } from "graphql";
 import { signup, login } from "@/lib/auth";
 import { validateEmail, validatePW } from "@/lib/form";
-import { editProfile } from "@/lib/user";
+import { editLinks, editProfile, getUser } from "@/lib/user";
+import { GraphQLJSON } from "graphql-type-json";
 
 export const resolvers = {
+  JSON: GraphQLJSON,
   Query: {
-    user: () => {
-      return {
-        firstName: "John",
-        lastName: "Doe",
-        email: "john.doe@example.com",
-        image: "",
-      };
-    },
-
-    userProfile: (obj: any, args: any, ctx: any) => {
+    userProfile: async (obj: any, args: any, ctx: any) => {
       if (!ctx.user) {
         return new GraphQLError("Unauthorized", {
           extensions: {
@@ -23,26 +16,23 @@ export const resolvers = {
         });
       }
 
-      return {
-        id: "1",
-        userId: "1",
-        firstName: "John",
-        lastName: "Doe",
-        email: "",
-        image: "",
-      };
-    },
+      const getUserFromDB = await getUser(ctx);
 
-    userLinks: () => {
-      return {
-        links: [
-          {
-            id: "1",
-            platform: "Github",
-            url: "",
+      if (!getUserFromDB) {
+        return new GraphQLError("Failed to get user links", {
+          extensions: {
+            code: 400,
           },
-        ],
-        userId: "1",
+        });
+      }
+
+      return {
+        links: JSON.parse(getUserFromDB.links),
+        userId: getUserFromDB.userId,
+        firstName: getUserFromDB.firstName,
+        lastName: getUserFromDB.lastName,
+        email: getUserFromDB.email,
+        image: getUserFromDB.image,
       };
     },
   },
@@ -117,6 +107,32 @@ export const resolvers = {
         lastName: res[0].lastName,
         email: res[0].email,
         image: res[0].image,
+      };
+    },
+
+    editLinks: async (_: any, { input }: any, ctx: any) => {
+      if (!ctx.user) {
+        return new GraphQLError("Unauthorized", {
+          extensions: {
+            code: 401,
+          },
+        });
+      }
+
+      const res = await editLinks(input, ctx);
+
+      if (!res) {
+        return new GraphQLError("Failed to edit links", {
+          extensions: {
+            code: 400,
+          },
+        });
+      }
+
+      return {
+        id: res.id,
+        userId: res.userId,
+        links: res.links ? JSON.parse(res.links) : [],
       };
     },
   },

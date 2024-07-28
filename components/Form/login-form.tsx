@@ -23,7 +23,7 @@ import Swal from "sweetalert2";
 
 export function LoginForm({ setIsLogin }: { setIsLogin: any }) {
   const [loginResult, login] = useMutation(LoginMutation);
-  const { setUserInfo } = useUser();
+  const { setUserInfo, setUserLinks } = useUser();
   const [state, setState] = useState({ email: "", password: "" });
   const [errors, setErrors] = useState({ email: "", password: "" });
   const router = useRouter();
@@ -51,6 +51,7 @@ export function LoginForm({ setIsLogin }: { setIsLogin: any }) {
     if (res.data.login) {
       setToken(res.data.login.token);
       setUserInfo(res.data.login.user);
+      setUserLinks(res.data.login.links);
       Swal.fire({
         icon: "success",
         title: "Success",

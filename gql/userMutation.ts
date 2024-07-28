@@ -23,3 +23,15 @@ export const userMutation = gql`
     }
   }
 `;
+
+export const editLinksMutation = gql`
+  mutation Mutation($input: JSON!) {
+    editLinks(input: $input) {
+      links {
+        platform
+        url
+      }
+      userId
+    }
+  }
+`;

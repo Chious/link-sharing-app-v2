@@ -50,6 +50,7 @@ export const login = async ({
       image: userProfile?.image,
       email: match.email,
     },
+    links: JSON.parse(userProfile?.links || "[]"),
   };
 };
 

@@ -13,6 +13,11 @@ import { Button } from "@/components/ui/button";
 import DragCollection from "../Drag/drag-collection";
 import { useUser } from "@/contexts/provider";
 import NoData from "./no-data";
+import { useState } from "react";
+import { useMutation } from "@urql/next";
+import { editLinksMutation } from "@/gql/userMutation";
+import Swal from "sweetalert2";
+import { getToken } from "@/lib/token";
 
 type Link = {
   id: string;
@@ -24,13 +29,50 @@ type Link = {
 export function LinksForm() {
   const { userLinks, setUserLinks } = useUser();
 
+  const [editLinksResult, editLinks] = useMutation(editLinksMutation);
+
   const addLink = () => {
     const newLink: Link = {
       id: Math.random().toString(36).substr(2, 9),
       platform: "",
-      url: "https://",
+      url: "",
     };
     setUserLinks([...userLinks, newLink]);
+  };
+
+  const validate = (links: Link[]) => {
+    for (const link of links) {
+      if (link.platform === "" || link.url === "") {
+        Swal.fire({
+          icon: "error",
+          title: "Oops...",
+          text: "Please fill in all fields",
+        });
+        return false;
+      }
+    }
+
+    return true;
+  };
+
+  const save = async () => {
+    if (!validate(userLinks)) {
+      return;
+    }
+
+    const result = await editLinks(
+      {
+        input: JSON.stringify(userLinks),
+      },
+      {
+        fetchOptions: {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${getToken()}`,
+          },
+        },
+      }
+    );
   };
 
   return (
@@ -56,7 +98,10 @@ export function LinksForm() {
         {userLinks.length === 0 ? <NoData /> : <DragCollection />}
       </CardContent>
       <CardFooter className="flex justify-end">
-        <Button className=" bg-dark-purple px-4 text-white w-full md:w-fit lg:w-fit">
+        <Button
+          className=" bg-dark-purple px-4 text-white w-full md:w-fit lg:w-fit"
+          onClick={save}
+        >
           Save
         </Button>
       </CardFooter>
