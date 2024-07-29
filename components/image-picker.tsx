@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import Image from "next/image";
-import icon_upload from "@/public/images/icon-upload-image.svg";
+import Icon_upload from "@/public/images/icon-upload-image.svg";
 
 export default function ImagePicker() {
   const [pickedImage, setPickedImage] = useState("");
@@ -24,7 +24,7 @@ export default function ImagePicker() {
   };
 
   return (
-    <div className="relative text-dark-purple flex flex-col gap-4 bg-light-purple rounded-lg aspect-square p-4 w-40 items-center justify-center">
+    <div className="relative text-dark-purple flex flex-col gap-4 bg-light-purple rounded-lg aspect-square p-4 w-40 items-center justify-center hover:shadow-md transition duration-100">
       <input
         type="file"
         className="absolute z-20 w-full h-full opacity-0"
@@ -41,7 +41,7 @@ export default function ImagePicker() {
           height={40}
         />
       )}
-      <Image src={icon_upload} alt="image icon" />
+      <Icon_upload />
       <h3>+ Upload Image</h3>
     </div>
   );

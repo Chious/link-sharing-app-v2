@@ -11,23 +11,23 @@ type ButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
 };
 
 export function PrevButton({ platform, url = "", ...props }: ButtonProps) {
-  const findPlatform = OPTIONS.find((option) => option.value === platform);
+  const findPlatform = OPTIONS.find((option: any) => option.value === platform);
   if (!findPlatform) return null;
 
   const colorClass = findPlatform.color ? findPlatform.color : "";
 
   return (
-    <Link href={url}>
+    <Link href={url} className="w-full">
       <Button
         {...props}
         className={
-          "text-white hover:scale-105 hover:shadow-md transition duration-150 flex flex-row gap-2 w-full"
+          " text-white hover:scale-105 hover:shadow-md transition duration-150 flex flex-row gap-2 w-full"
         }
         style={{
           backgroundColor: colorClass,
         }}
       >
-        {findPlatform.icon}
+        <div className="svg-fill-white">{findPlatform.icon}</div>
         <h3>{findPlatform.label}</h3>
         <ArrowRight />
       </Button>

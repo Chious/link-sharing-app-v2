@@ -35,3 +35,23 @@ p {
   font-size: 12px;
   line-height: 150%;
 }
+
+.svg-fill-white svg {
+  fill: white;
+}
+
+.svg-fill-white circle,
+.svg-fill-white line,
+.svg-fill-white path {
+  fill: white;
+}
+
+.svg-fill-purple svg {
+  fill: #633cff;
+}
+
+.svg-fill-purple circle,
+.svg-fill-purple line,
+.svg-fill-purple path {
+  fill: #633cff;
+}

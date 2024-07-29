@@ -73,6 +73,20 @@ export function LinksForm() {
         },
       }
     );
+
+    if (result.data.editLinks) {
+      Swal.fire({
+        icon: "success",
+        title: "Success",
+        text: "Links updated successfully",
+      });
+    } else {
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: "Something went wrong",
+      });
+    }
   };
 
   return (

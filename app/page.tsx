@@ -3,6 +3,7 @@
 import { LoginForm } from "@/components/Form/login-form";
 import { SignupForm } from "@/components/Form/signup-form";
 import LogoM from "@/public/images/logo-devlinks-large.svg";
+import Image from "next/image";
 import { useState } from "react";
 
 export default function Login() {

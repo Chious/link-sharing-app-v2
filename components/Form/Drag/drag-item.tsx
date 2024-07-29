@@ -3,7 +3,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
-import drag_icon from "@/public/images/icon-drag-and-drop.svg";
+import Drag_icon from "@/public/images/icon-drag-and-drop.svg";
 import { Dropdown } from "@/components/dropdown";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
@@ -35,7 +35,7 @@ export default function SortableItem({
       <div className="flex justify-between">
         <div className="flex gap-4 items-center">
           <Button className="hover:bg-gray/20" {...listeners} {...attributes}>
-            <Image src={drag_icon} alt="drag icon" />
+            <Drag_icon />
           </Button>
           <h3>Link #{index + 1}</h3>
         </div>
