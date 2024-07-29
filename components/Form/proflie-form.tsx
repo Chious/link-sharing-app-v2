@@ -11,21 +11,32 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useUser } from "@/contexts/provider";
 import ImagePicker from "../image-picker";
-import { userMutation } from "@/gql/userMutation";
+import { userMutation, uploadFileMutation } from "@/gql/userMutation";
 import { useMutation } from "@urql/next";
 import { useState } from "react";
 import { getToken } from "@/lib/token";
 import Swal from "sweetalert2";
 
+type Profile = {
+  image: File | null;
+  firstName: string;
+  lastName: string;
+  email: string;
+};
+
 export function ProflieForm() {
   const { userInfo, setUserInfo } = useUser();
-  const [state, setState] = useState(userInfo);
+  const { image, ...rest } = userInfo;
+
+  const [state, setState] = useState<Profile>({ ...rest, image: null });
   const [errors, setErrors] = useState({
     firstName: "",
     lastName: "",
     email: "",
+    image: "",
   });
   const [editResult, editProfile] = useMutation(userMutation);
+  const [uploadResult, uploadFile] = useMutation(uploadFileMutation);
 
   const validate = () => {
     if (!state.firstName) {
@@ -54,9 +65,11 @@ export function ProflieForm() {
       return;
     }
 
+    const { image, ...rest } = state;
+
     const token = getToken();
     const res = await editProfile(
-      { input: state },
+      { input: rest },
       {
         fetchOptions: {
           headers: {
@@ -65,6 +78,39 @@ export function ProflieForm() {
         },
       }
     );
+    if (image) {
+      const formData = new FormData();
+      formData.append(
+        "operations",
+        JSON.stringify({
+          query: uploadFileMutation,
+          variables: {
+            file: null,
+          },
+        })
+      );
+      formData.append(
+        "map",
+        JSON.stringify({
+          "0": ["variables.file"],
+        })
+      );
+      formData.append("0", image);
+
+      const res2 = await uploadFile(
+        { input: formData },
+        {
+          fetchOptions: {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "Content-Type": "multipart/form-data",
+              "x-apollo-operation-name": "singleFileUpload",
+            },
+          },
+        }
+      );
+      console.log("res2: ", res2);
+    }
 
     if (res.data.editProfile) {
       setUserInfo(res.data.editProfile);
@@ -95,7 +141,13 @@ export function ProflieForm() {
           <CardDescription className="text-dark-gray text-start w-full">
             Profile picture
           </CardDescription>
-          <ImagePicker />
+          <ImagePicker
+            image={state.image}
+            setImage={(v) => {
+              setState({ ...state, image: v });
+            }}
+            originalImage={image}
+          />
           <CardDescription className="text-dark-gray text-start">
             Image must be below 1024x1024px. Use PNG or JPG format.
           </CardDescription>

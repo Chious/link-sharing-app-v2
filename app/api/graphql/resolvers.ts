@@ -3,9 +3,11 @@ import { signup, login } from "@/lib/auth";
 import { validateEmail, validatePW } from "@/lib/form";
 import { editLinks, editProfile, getUser } from "@/lib/user";
 import { GraphQLJSON } from "graphql-type-json";
+import { GraphQLUpload } from "graphql-upload-ts";
 
 export const resolvers = {
   JSON: GraphQLJSON,
+  Upload: GraphQLUpload,
   Query: {
     userProfile: async (obj: any, args: any, ctx: any) => {
       if (!ctx.user) {
@@ -15,7 +17,6 @@ export const resolvers = {
           },
         });
       }
-
       const getUserFromDB = await getUser(ctx);
 
       if (!getUserFromDB) {
@@ -97,7 +98,6 @@ export const resolvers = {
           },
         });
       }
-
       const res = await editProfile(input, ctx);
 
       return {
@@ -107,6 +107,21 @@ export const resolvers = {
         lastName: res[0].lastName,
         email: res[0].email,
         image: res[0].image,
+      };
+    },
+
+    singleFileUpload: async (_: any, { input }: any, ctx: any) => {
+      const { createReadStream, filename, mimetype, encoding } = await input;
+
+      console.log("createReadStream: ", createReadStream);
+      console.log("filename: ", filename);
+      console.log("mimetype: ", mimetype);
+      console.log("encoding: ", encoding);
+
+      return {
+        filename: "hello",
+        mimetype: "image/jpeg",
+        encoding: "7bit",
       };
     },
 

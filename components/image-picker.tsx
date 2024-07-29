@@ -2,14 +2,25 @@ import React, { useState } from "react";
 import Image from "next/image";
 import Icon_upload from "@/public/images/icon-upload-image.svg";
 
-export default function ImagePicker() {
-  const [pickedImage, setPickedImage] = useState("");
+export default function ImagePicker({
+  image,
+  setImage,
+  originalImage,
+}: {
+  image: File | null;
+  setImage: (image: File | null) => void;
+  originalImage: string | null;
+}) {
+  const [previewImage, setPreviewImage] = useState<string | null>(
+    originalImage || null
+  );
 
   const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
 
     if (!file) {
-      setPickedImage("");
+      setPreviewImage(null);
+      setImage(null);
       return;
     }
 
@@ -17,7 +28,8 @@ export default function ImagePicker() {
 
     fileReader.onload = () => {
       const result = fileReader.result as string;
-      setPickedImage(result);
+      setPreviewImage(result);
+      setImage(file);
     };
 
     fileReader.readAsDataURL(file);
@@ -32,9 +44,9 @@ export default function ImagePicker() {
         onChange={handleImageChange}
         required
       />
-      {pickedImage && (
+      {previewImage && (
         <Image
-          src={pickedImage}
+          src={previewImage}
           alt="preview icon"
           className="absolute z-10 w-full h-full rounded-md"
           width={40}

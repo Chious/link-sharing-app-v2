@@ -1,5 +1,11 @@
 export const schema = `#graphql
 
+ type File {
+    filename: String!
+    mimetype: String!
+    encoding: String!
+  }
+
    type User {
       firstName: String
       lastName: String
@@ -36,6 +42,8 @@ export const schema = `#graphql
 
    scalar JSON
 
+   scalar Upload
+
    input EditLinksInput {
       platform: String
       url: String
@@ -56,7 +64,6 @@ export const schema = `#graphql
       firstName: String
       lastName: String
       email: String
-      image: String
    }
 
    type Query {
@@ -67,6 +74,7 @@ export const schema = `#graphql
       login(input: AuthInput): AuthResponse
       signup(input: AuthInput): AuthResponse
       editProfile(input: EditProfileInput): UserProfile
+      singleFileUpload(input: Upload): File
       editLinks(input: JSON): UserProfile
    }
 `;

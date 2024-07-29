@@ -12,7 +12,7 @@ export const getUser = gql`
 `;
 
 export const userMutation = gql`
-  mutation Mutation($input: EditProfileInput!) {
+  mutation Mutation($input: EditProfileInput) {
     editProfile(input: $input) {
       id
       userId
@@ -20,6 +20,16 @@ export const userMutation = gql`
       lastName
       email
       image
+    }
+  }
+`;
+
+export const uploadFileMutation = gql`
+  mutation Mutation($input: Upload) {
+    singleFileUpload(input: $input) {
+      encoding
+      filename
+      mimetype
     }
   }
 `;
