@@ -50,11 +50,7 @@ export function Dropdown({ value, setItemVal }) {
                     className={`hover:bg-gray/20`}
                   >
                     <div className="flex flex-row items-center gap-2">
-                      <Image
-                        src={option.icon}
-                        alt=""
-                        className="w-4 h-4 mr-2"
-                      />
+                      <Image src={option.icon} alt={option.label} width={20} />
                       <h3>{option.label}</h3>
                     </div>
                   </SelectItem>

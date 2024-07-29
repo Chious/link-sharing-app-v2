@@ -1,10 +1,15 @@
+"use client";
+
 import ControlBar_2 from "@/components/ControlBar/control-bar-2";
-import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import Image from "next/image";
 import logo from "@/app/icon.png";
+import { PrevButton } from "@/components/ui/prev-button";
+import { useUser } from "@/contexts/provider";
 
 export default function PreviewPage() {
+  const { userLinks, userInfo } = useUser();
+
   return (
     <section className="relative flex flex-col gap-16 items-center">
       <div className="w-screen h-80 -top-10 absolute bg-dark-purple rounded-b-lg -z-10" />
@@ -18,18 +23,12 @@ export default function PreviewPage() {
             width={80}
             height={80}
           />
-          <h1 className="text-center">Ben Wright</h1>
-          <h3 className="text-center text-dark-gray">ben@example.com</h3>
+          <h1 className="text-center">{`${userInfo.firstName} ${userInfo.lastName}`}</h1>
+          <h3 className="text-center text-dark-gray">{userInfo.email}</h3>
           <div className="flex flex-col gap-4 w-full">
-            <Button className=" w-full text-dark-purple border-dark-purple border-solid border">
-              Github
-            </Button>
-            <Button className=" w-full text-dark-purple border-dark-purple border-solid border">
-              Github
-            </Button>
-            <Button className=" w-full text-dark-purple border-dark-purple border-solid border">
-              Github
-            </Button>
+            {userLinks.map((link, i) => (
+              <PrevButton key={i} platform={link.platform} url={link.url} />
+            ))}
           </div>
         </CardContent>
       </Card>
