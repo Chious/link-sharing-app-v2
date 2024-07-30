@@ -36,7 +36,6 @@ export function ProflieForm() {
     image: "",
   });
   const [editResult, editProfile] = useMutation(userMutation);
-  const [uploadResult, uploadFile] = useMutation(uploadFileMutation);
 
   const validate = () => {
     if (!state.firstName) {
@@ -66,7 +65,6 @@ export function ProflieForm() {
     }
 
     const { image, ...rest } = state;
-
     const token = getToken();
     const res = await editProfile(
       { input: rest },
@@ -78,52 +76,33 @@ export function ProflieForm() {
         },
       }
     );
+
     if (image) {
       const formData = new FormData();
-      formData.append(
-        "operations",
-        JSON.stringify({
-          query: uploadFileMutation,
-          variables: {
-            file: null,
-          },
-        })
-      );
-      formData.append(
-        "map",
-        JSON.stringify({
-          "0": ["variables.file"],
-        })
-      );
-      formData.append("0", image);
+      formData.append("file", image);
 
-      const res2 = await uploadFile(
-        { input: formData },
-        {
-          fetchOptions: {
-            headers: {
-              Authorization: `Bearer ${token}`,
-              "Content-Type": "multipart/form-data",
-              "x-apollo-operation-name": "singleFileUpload",
-            },
-          },
-        }
-      );
-      console.log("res2: ", res2);
+      const res2 = await fetch(`/api/presigned-url`, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        body: formData,
+      }).catch((err) => {
+        console.log("err: ", err);
+      });
     }
 
     if (res.data.editProfile) {
-      setUserInfo(res.data.editProfile);
       Swal.fire({
-        icon: "success",
         title: "Success",
         text: "Profile updated successfully",
+        icon: "success",
       });
     } else {
       Swal.fire({
+        title: "Error",
+        text: "Failed to update profile",
         icon: "error",
-        title: "Oops...",
-        text: res.error?.message,
       });
     }
   };

@@ -11,6 +11,7 @@ type Link = {
 };
 
 type User = {
+  userId: string;
   id: string;
   firstName: string;
   lastName: string;
@@ -24,6 +25,7 @@ const defaultState = {
   userLinks: [],
   setUserLinks: () => {},
   userInfo: {
+    userId: "",
     id: "",
     firstName: "",
     lastName: "",
@@ -39,6 +41,7 @@ const UserContext = createContext<{
   userLinks: Link[];
   setUserLinks: Dispatch<SetStateAction<Link[]>>;
   userInfo: {
+    userId: string;
     id: string;
     firstName: string;
     lastName: string;
@@ -60,6 +63,7 @@ export const UserProvider = ({ children }: PropsWithChildren) => {
   const [user, setUser] = useState<any>(null);
   const [userLinks, setUserLinks] = useState<Link[]>([]);
   const [userInfo, setUserInfo] = useState<User>({
+    userId: "",
     id: "",
     firstName: "",
     lastName: "",

@@ -27,9 +27,9 @@ export const userMutation = gql`
 export const uploadFileMutation = gql`
   mutation Mutation($input: Upload) {
     singleFileUpload(input: $input) {
-      encoding
       filename
       mimetype
+      encoding
     }
   }
 `;

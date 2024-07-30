@@ -6,6 +6,7 @@ import crypto from "crypto";
 import jwt from "jsonwebtoken";
 import { GraphQLError } from "graphql";
 const bcrypt = require("bcryptjs");
+import { getImageUrl } from "./image";
 
 export const login = async ({
   email,
@@ -36,11 +37,15 @@ export const login = async ({
     });
   }
 
-  const userProfile = await db.query.userProfiles.findFirst({
+  let userProfile = await db.query.userProfiles.findFirst({
     where: eq(userProfiles.userId, match.id),
   });
 
   const token = await createTokenForUser({ userId: match.id });
+
+  if (userProfile?.image) {
+    userProfile.image = await getImageUrl(userProfile.image);
+  }
 
   return {
     token: token,
@@ -119,7 +124,7 @@ export const createTokenForUser = async ({ userId }: { userId: string }) => {
   return token;
 };
 
-export const verifyToken = async (token: string) => {
+export const verifyToken = async (token: string | null) => {
   if (!token) {
     throw new GraphQLError("No token provided", {
       extensions: {

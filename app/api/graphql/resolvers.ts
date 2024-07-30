@@ -4,6 +4,7 @@ import { validateEmail, validatePW } from "@/lib/form";
 import { editLinks, editProfile, getUser } from "@/lib/user";
 import { GraphQLJSON } from "graphql-type-json";
 import { GraphQLUpload } from "graphql-upload-ts";
+import { GraphQLScalarType } from "graphql";
 
 export const resolvers = {
   JSON: GraphQLJSON,
@@ -111,13 +112,6 @@ export const resolvers = {
     },
 
     singleFileUpload: async (_: any, { input }: any, ctx: any) => {
-      const { createReadStream, filename, mimetype, encoding } = await input;
-
-      console.log("createReadStream: ", createReadStream);
-      console.log("filename: ", filename);
-      console.log("mimetype: ", mimetype);
-      console.log("encoding: ", encoding);
-
       return {
         filename: "hello",
         mimetype: "image/jpeg",

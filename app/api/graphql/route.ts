@@ -25,12 +25,15 @@ if (process.env.NODE_ENV === "production") {
 const server = new ApolloServer({
   typeDefs: schema,
   resolvers,
+  csrfPrevention: true,
+  cache: "bounded",
   plugins,
 });
 
 const handler = startServerAndCreateNextHandler<NextRequest>(server, {
   context: async (req) => {
     const token = await getTokenFromRequest(req);
+
     return { user: token };
   },
 });
