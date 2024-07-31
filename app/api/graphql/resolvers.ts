@@ -12,7 +12,7 @@ export const resolvers = {
     userProfile: async (obj: any, args: any, ctx: any) => {
       let getUserFromDB;
 
-      if (ctx) {
+      if (ctx.user) {
         const userId = await verifyToken(ctx.user);
         if (!userId) return;
         getUserFromDB = await getUser(userId);
