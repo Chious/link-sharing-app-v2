@@ -27,7 +27,7 @@ type Profile = {
 
 export function ProflieForm() {
   const { userInfo, setUserInfo } = useUser();
-  const { image, ...rest } = userInfo;
+  const { image, userId, ...rest } = userInfo;
 
   const [editing, setEditing] = useState(false);
   const [state, setState] = useState<Profile>({ ...rest, image: null });
