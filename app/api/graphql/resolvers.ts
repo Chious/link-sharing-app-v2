@@ -1,27 +1,27 @@
 import { GraphQLError } from "graphql";
-import { signup, login } from "@/lib/auth";
+import { signup, login, verifyToken } from "@/lib/auth";
 import { validateEmail, validatePW } from "@/lib/form";
 import { editLinks, editProfile, getUser } from "@/lib/user";
 import { GraphQLJSON } from "graphql-type-json";
 import { GraphQLUpload } from "graphql-upload-ts";
-import { GraphQLScalarType } from "graphql";
 
 export const resolvers = {
   JSON: GraphQLJSON,
   Upload: GraphQLUpload,
   Query: {
     userProfile: async (obj: any, args: any, ctx: any) => {
-      if (!ctx.user) {
-        return new GraphQLError("Unauthorized", {
-          extensions: {
-            code: 401,
-          },
-        });
+      let getUserFromDB;
+
+      if (ctx) {
+        const userId = await verifyToken(ctx.user);
+        if (!userId) return;
+        getUserFromDB = await getUser(userId);
+      } else {
+        getUserFromDB = await getUser(args.userId);
       }
-      const getUserFromDB = await getUser(ctx);
 
       if (!getUserFromDB) {
-        return new GraphQLError("Failed to get user links", {
+        return new GraphQLError("No User Found!", {
           extensions: {
             code: 400,
           },
@@ -29,8 +29,9 @@ export const resolvers = {
       }
 
       return {
-        links: JSON.parse(getUserFromDB.links),
+        id: getUserFromDB.id,
         userId: getUserFromDB.userId,
+        links: getUserFromDB.links ? JSON.parse(getUserFromDB.links) : [],
         firstName: getUserFromDB.firstName,
         lastName: getUserFromDB.lastName,
         email: getUserFromDB.email,

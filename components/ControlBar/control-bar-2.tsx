@@ -7,13 +7,15 @@ import { useState } from "react";
 import Link from "next/link";
 import { useEffect } from "react";
 import { cn } from "@/lib/utils";
+import { useUser } from "@/contexts/provider";
 
 export default function ControlBar_2() {
+  const { userInfo } = useUser();
   const [showToast, setShowToast] = useState(false);
   const copyLink = () => {
     setShowToast(true);
     navigator.clipboard.writeText(
-      process.env.NEXT_PUBLIC_APP_URL + "/share/123"
+      process.env.NEXT_PUBLIC_PRODUCTION_URL + `/share/${userInfo?.userId}`
     );
   };
   useEffect(() => {

@@ -13,11 +13,12 @@ import { Button } from "@/components/ui/button";
 import DragCollection from "../Drag/drag-collection";
 import { useUser } from "@/contexts/provider";
 import NoData from "./no-data";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useMutation } from "@urql/next";
 import { editLinksMutation } from "@/gql/userMutation";
 import Swal from "sweetalert2";
 import { getToken } from "@/lib/token";
+import { cn } from "@/lib/utils";
 
 type Link = {
   id: string;
@@ -28,8 +29,8 @@ type Link = {
 
 export function LinksForm() {
   const { userLinks, setUserLinks } = useUser();
-
-  const [editLinksResult, editLinks] = useMutation(editLinksMutation);
+  const [editing, setEditing] = useState(false);
+  const [{ error }, editLinks] = useMutation(editLinksMutation);
 
   const addLink = () => {
     const newLink: Link = {
@@ -38,6 +39,7 @@ export function LinksForm() {
       url: "",
     };
     setUserLinks([...userLinks, newLink]);
+    setEditing(true);
   };
 
   const validate = (links: Link[]) => {
@@ -89,6 +91,16 @@ export function LinksForm() {
     }
   };
 
+  useEffect(() => {
+    if (error) {
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: error.message,
+      });
+    }
+  }, [error]);
+
   return (
     <Card className=" flex-1 p-6 sm:p-8 bg-white border-transparent w-full">
       <CardHeader>
@@ -100,7 +112,7 @@ export function LinksForm() {
           world!
         </CardDescription>
       </CardHeader>
-      <CardContent className="space-y-4 flex-1 overflow-scroll h-[400px]">
+      <CardContent className="space-y-4 flex-1 overflow-scroll h-[450px]">
         <div className="space-y-2">
           <Button
             onClick={addLink}
@@ -109,12 +121,23 @@ export function LinksForm() {
             + Add new link
           </Button>
         </div>
-        {userLinks.length === 0 ? <NoData /> : <DragCollection />}
+        {userLinks.length === 0 ? (
+          <NoData />
+        ) : (
+          <DragCollection setEditing={setEditing} />
+        )}
       </CardContent>
       <CardFooter className="flex justify-end">
         <Button
-          className=" bg-dark-purple px-4 text-white w-full md:w-fit lg:w-fit"
-          onClick={save}
+          className={cn(" px-4 text-white w-full md:w-fit lg:w-fit", {
+            "bg-dark-purple": editing,
+            "bg-dark-purple/50": !editing,
+            "cursor-default": !editing,
+          })}
+          onClick={() => {
+            if (!editing) return;
+            save();
+          }}
         >
           Save
         </Button>

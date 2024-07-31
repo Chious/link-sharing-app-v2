@@ -23,7 +23,7 @@ export default function RootLayout({
       <body
         className={`${instrumentSans.variable} font-sans bg-light-gray w-screen h-screen`}
       >
-        <main className=" p-0 md:p-8 lg:p-8">
+        <main className=" p-0 md:p-8 lg:p-8 h-screen">
           <GQLProvider>
             <UserProvider>{children}</UserProvider>
           </GQLProvider>

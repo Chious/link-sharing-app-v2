@@ -10,6 +10,7 @@ import Image from "next/image";
 import { Button } from "../ui/button";
 import { useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 export default function ControlBar_1({
   form,
@@ -18,10 +19,34 @@ export default function ControlBar_1({
   form: string;
   setForm: React.Dispatch<React.SetStateAction<string>>;
 }) {
+  const [showMenu, setShowMenu] = useState(false);
+  const router = useRouter();
+
+  const logout = () => {
+    router.push("/");
+    localStorage.removeItem("token");
+  };
+
   return (
-    <Card className="rounded-none md:rounded-md lg:rounded-md flex flex-row justify-between items-center p-4 bg-white border-transparent">
-      <Logo_L className="hidden md:block lg:block" />
-      <Logo_S className="block md:hidden lg:hidden" />
+    <Card className="relative rounded-none md:rounded-md lg:rounded-md flex flex-row justify-between items-center p-4 bg-white border-transparent">
+      <Logo_L
+        className="hidden md:block lg:block cursor-pointer"
+        onClick={() => setShowMenu(!showMenu)}
+      />
+      <Logo_S
+        className="block md:hidden lg:hidden cursor-pointer"
+        onClick={() => setShowMenu(!showMenu)}
+      />
+      {showMenu && (
+        <div
+          id="logout menu"
+          className="z-40 absolute top-16 left-4 bg-white shadow-md rounded-md p-4"
+        >
+          <button className="hover:text-dark-purple" onClick={logout}>
+            Logout!
+          </button>
+        </div>
+      )}
       <div className="btn-group flex">
         <Button
           className={`flex gap-3 transition duration-100 ${

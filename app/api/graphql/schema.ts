@@ -7,6 +7,7 @@ export const schema = `#graphql
   }
 
    type User {
+      userId: ID
       firstName: String
       lastName: String
       image: String
@@ -14,8 +15,8 @@ export const schema = `#graphql
    }
 
    type UserProfile {
-      id: ID!
-      userId: ID!
+      id: ID
+      userId: ID
       firstName: String
       lastName: String
       email: String
@@ -67,7 +68,7 @@ export const schema = `#graphql
    }
 
    type Query {
-      userProfile: UserProfile
+      userProfile(userId: String!): UserProfile
    }
 
    type Mutation {

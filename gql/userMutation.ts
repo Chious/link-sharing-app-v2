@@ -1,12 +1,14 @@
 import { gql } from "@urql/next";
 
 export const getUser = gql`
-  query GetUser {
-    user {
-      firstName
-      lastName
+  query Query($userProfileId: String!) {
+    userProfile(userId: $userProfileId) {
+      id
       email
-      token
+      firstName
+      image
+      lastName
+      links
     }
   }
 `;

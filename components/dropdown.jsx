@@ -33,9 +33,6 @@ export function Dropdown({ value, setItemVal }) {
         >
           <SelectTrigger
             className="w-full bg-white/20 border-gray"
-            onChange={(e) => {
-              console.log("onChange: ", e.target.value);
-            }}
             value={value}
           >
             <SelectValue placeholder="" />

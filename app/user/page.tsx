@@ -4,11 +4,11 @@ import ControlBar_1 from "@/components/ControlBar/control-bar-1";
 import { LinksForm } from "@/components/Form/links-form/links-form";
 import { ProflieForm } from "@/components/Form/proflie-form";
 import { Card, CardHeader, CardContent } from "@/components/ui/card";
-import React from "react";
+import React, { useEffect } from "react";
 import { useState } from "react";
 import Image from "next/image";
 import icon from "@/app/icon.png";
-import Logo_S from "@/public/images/illustration-phone-mockup.svg";
+import Mockup_Image from "@/public/images/illustration-phone-mockup.svg";
 import { useUser } from "@/contexts/provider";
 import { PrevButton } from "@/components/ui/prev-button";
 
@@ -17,10 +17,10 @@ export default function EditPage() {
   const { userInfo, userLinks } = useUser();
 
   return (
-    <section className="flex flex-col gap-4">
+    <section className="flex flex-col gap-4 h-full w-full">
       <ControlBar_1 form={form} setForm={setForm} />
 
-      <div className="flex justify-center gap-3">
+      <div className="flex justify-center gap-3 h-full">
         <Card className="bg-white hidden md:block lg:block">
           <CardHeader>
             <CardContent className="relative flex items-center justify-center">
@@ -38,7 +38,7 @@ export default function EditPage() {
                   <PrevButton key={index} platform={link.platform} />
                 ))}
               </div>
-              <Logo_S />
+              <Mockup_Image />
             </CardContent>
           </CardHeader>
         </Card>

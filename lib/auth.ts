@@ -50,6 +50,7 @@ export const login = async ({
   return {
     token: token,
     user: {
+      userId: match.id,
       firstName: userProfile?.firstName,
       lastName: userProfile?.lastName,
       image: userProfile?.image,
@@ -109,6 +110,7 @@ export const signup = async ({
   return {
     token: token,
     user: {
+      userId: newUser[0].id,
       firstName: "",
       lastName: "",
       image: "",

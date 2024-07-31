@@ -29,13 +29,6 @@ export const uploadImageToS3 = async (
     ContentType: fileType,
   });
 
-  console.log("command: ", {
-    BUCKET_NAME,
-    filename,
-    resizedImage,
-    fileType,
-  });
-
   await s3.send(command);
   const url = await getSignedUrl(s3, command, { expiresIn: 60 });
 

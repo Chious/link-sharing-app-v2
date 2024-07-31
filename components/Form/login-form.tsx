@@ -14,7 +14,7 @@ import { Button } from "@/components/ui/button";
 
 import { useMutation } from "urql";
 import { LoginMutation } from "@/gql/authMutation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { setToken } from "@/lib/token";
 import { useRouter } from "next/navigation";
 import { validateEmail, validatePW } from "@/lib/form";
@@ -22,7 +22,7 @@ import { useUser } from "@/contexts/provider";
 import Swal from "sweetalert2";
 
 export function LoginForm({ setIsLogin }: { setIsLogin: any }) {
-  const [loginResult, login] = useMutation(LoginMutation);
+  const [{ error }, login] = useMutation(LoginMutation);
   const { setUserInfo, setUserLinks } = useUser();
   const [state, setState] = useState({ email: "", password: "" });
   const [errors, setErrors] = useState({ email: "", password: "" });
@@ -47,8 +47,7 @@ export function LoginForm({ setIsLogin }: { setIsLogin: any }) {
     if (!validate()) return;
 
     const res = await login({ input: state });
-
-    if (res.data.login) {
+    if (res.data && res.data.login) {
       setToken(res.data.login.token);
       setUserInfo(res.data.login.user);
       setUserLinks(res.data.login.links);
@@ -67,6 +66,16 @@ export function LoginForm({ setIsLogin }: { setIsLogin: any }) {
       });
     }
   };
+
+  useEffect(() => {
+    if (error) {
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: error.message,
+      });
+    }
+  }, [error]);
 
   return (
     <div className="flex items-center justify-center bg-background">

@@ -5,6 +5,7 @@ export const SignupMutation = gql`
     signup(input: $input) {
       token
       user {
+        userId
         firstName
         image
         lastName
@@ -19,6 +20,7 @@ export const LoginMutation = gql`
     login(input: $input) {
       token
       user {
+        userId
         firstName
         image
         lastName

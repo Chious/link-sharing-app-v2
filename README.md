@@ -34,7 +34,7 @@ Users should be able to:
 
 ### Screenshot
 
-![](./screenshot.jpg)
+![](./screenshot.png)
 
 ### Links
 
@@ -44,6 +44,8 @@ Users should be able to:
 ## My process
 
 ### Built with
+
+![image](./built-with.png)
 
 1. Front-end
 
@@ -74,21 +76,64 @@ Users should be able to:
 - [jsonwebtoken](https://www.npmjs.com/package/jsonwebtoken) - package to manage jwt
 - [bycryptjs](https://www.npmjs.com/package/bcryptjs) - package to manage password
 
+### Process:
+
+1. 【FE】 Create Pages and setting styles for front-end:
+
+- setting `tailwind.config.ts`
+- create components (form/ dropdown/ etc)
+- create pages (login/ register/ profile/ etc)
+- build up drop and drag component with `dnd-kit`
+
+2. 【BE】 Create GraphQL schema and mutation for backend:
+
+- create `/api/graphql/schema.ts`
+- create `/api/graphql/mutation.ts`
+- create `/api/graphql/resolver.ts` -- connect graphql to Apollo Server
+- 【FE】setup client side `@urql/next`
+
+3. 【BE】 Create schema for database and connect to TURSO with `dirzzle-orm`:
+   > Detail to the topic: https://orm.drizzle.team/learn/tutorials/drizzle-with-turso
+
+- create `/api/db/index.ts`
+- create `/api/db/schema.ts`
+
+then run:
+
+```
+npm run db:gen
+npm run db:push
+```
+
+4. 【FE】 Finish register and login & CRUD for profile
+
+   > the process is using `useQuery` and `useMutation` from `@urql/next`
+
+5. 【BE】 Upload image to S3 and save to database
+   > the process is using `aws-sdk` to upload image to S3
+   > Since form-data is restricted by GraphQL, create API route by nextjs instead.
+
+- Setup User in S3, reference: https://conermurphy.com/blog/presigned-urls-nextjs-s3-upload
+
 ### What I learned
 
-- How to use dnd-kit to manage drag and drop
-- How to use graphql to manage api
-- How to use tailwindcss to manage css
-- How to use nextjs to manage ssr and ssr
+- CRUD with GraphQL in Server Side and Client Side
+- Build up SQLite with `drizzle-orm`
+- Image Upload with `aws-sdk`
+- Presigned URL with `aws-sdk`
+- Drag and Drop with `dnd-kit`
 
 ### Continued development
 
 ### Useful resources
 
 1. [【Youtube】Storing Images in S3 from Node Server](https://www.youtube.com/watch?v=eQAIojcArRY)
+2. [【Frontend Master】Server-Side GraphQL in Next.js](https://frontendmasters.com/courses/server-graphql-nextjs/)
+3. [【DOC】drizzle-orm](https://orm.drizzle.team)
+4. [【DOC】dnd-kit](https://dndkit.com)
+5. [【DOC】@urql/next](https://www.npmjs.com/package/@urql/next)
 
 ## Author
 
-- Website - [Add your name here](https://www.your-site.com)
-- Frontend Mentor - [@yourusername](https://www.frontendmentor.io/profile/yourusername)
-- Twitter - [@yourusername](https://www.twitter.com/yourusername)
+- Github - [@Chious](https://github.com/Chious)
+- Frontend Mentor - [@Chious](https://www.frontendmentor.io/profile/Chious)

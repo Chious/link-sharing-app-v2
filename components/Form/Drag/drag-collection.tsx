@@ -16,7 +16,7 @@ import {
 import SortableItem from "./drag-item";
 import { useUser } from "@/contexts/provider";
 
-export default function DragCollection() {
+export default function DragCollection({ setEditing }: { setEditing: any }) {
   const { userLinks, setUserLinks } = useUser();
 
   const sensors = useSensors(
@@ -45,6 +45,7 @@ export default function DragCollection() {
   };
 
   const setItemVal = (id: string, val: string, key: string) => {
+    setEditing(true);
     setUserLinks(
       userLinks.map((item) => {
         if (item.id == id) {
