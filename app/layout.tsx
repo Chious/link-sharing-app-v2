@@ -11,6 +11,18 @@ const instrumentSans = Inter({
 
 export const metadata: Metadata = {
   title: "Frontend Mentor | Link-sharing app",
+  description:
+    "This is a solution to the Link-sharing app challenge on Frontend Mentor. It's a platform where users can share interesting links with each other.",
+  openGraph: {
+    title: "Frontend Mentor | Link-sharing app",
+    description:
+      "This is a solution to the Link-sharing app challenge on Frontend Mentor. It's a platform where users can share interesting links with each other.",
+    type: "website",
+    url: "https://www.frontendmentor.io/challenges/linksharing-app-Fbt7yweGsT",
+    images: [
+      "https://raw.githubusercontent.com/Chious/link-sharing-app-v2/main/app/icon.png",
+    ],
+  },
 };
 
 export default function RootLayout({
