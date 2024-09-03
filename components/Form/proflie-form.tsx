@@ -83,15 +83,22 @@ export function ProflieForm() {
       const formData = new FormData();
       formData.append("file", image);
 
-      const res2 = await fetch(`/api/presigned-url`, {
+      await fetch(`/api/presigned-url`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,
         },
         body: formData,
-      }).catch((err) => {
-        console.log("err: ", err);
-      });
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          setUserInfo((prev) => {
+            return { ...prev, image: data.presignedUrl };
+          });
+        })
+        .catch((err) => {
+          console.log("err: ", err);
+        });
     }
 
     if (res.data.editProfile) {
@@ -99,6 +106,11 @@ export function ProflieForm() {
         title: "Success",
         text: "Profile updated successfully",
         icon: "success",
+      });
+
+      const { image, ...rest } = res.data.editProfile;
+      setUserInfo((prev) => {
+        return { ...prev, ...rest };
       });
     } else {
       Swal.fire({

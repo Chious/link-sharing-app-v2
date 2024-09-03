@@ -24,7 +24,11 @@ export async function POST(request: NextRequest) {
     return Response.json({ error: "No file provided" }, { status: 400 });
 
   // send file to s3
-  const presignedUrl = await uploadImageToS3(userId, file.type, file);
+  await uploadImageToS3(userId, file.type, file);
+
+  const presignedUrl = await getImageUrl(
+    `${userId}.${file.type.split("/")[1]}`
+  );
 
   return Response.json({ presignedUrl });
 }

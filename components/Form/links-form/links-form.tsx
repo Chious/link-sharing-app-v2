@@ -76,6 +76,8 @@ export function LinksForm() {
       }
     );
 
+    setUserLinks(result.data.editLinks.links);
+
     if (result.data.editLinks) {
       Swal.fire({
         icon: "success",

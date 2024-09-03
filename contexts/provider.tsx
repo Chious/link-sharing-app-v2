@@ -3,7 +3,7 @@
 import { createContext, PropsWithChildren, useContext, useState } from "react";
 import { Dispatch, SetStateAction } from "react";
 
-type Link = {
+export type Link = {
   id: string;
   platform: string;
   url: string;
